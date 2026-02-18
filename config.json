@@ -3,17 +3,10 @@
     "loglevel": "warning"
   },
   "dns": {
+    "tag": "dns-in",
     "servers": [
-      {
-        "address": "1.1.1.1",
-        "domains": ["geosite:geolocation-!cn"]
-      },
-      {
-        "address": "223.5.5.5",
-        "domains": ["geosite:cn"],
-        "expectIPs": ["geoip:cn"]
-      },
-      "localhost"
+      "1.1.1.1",
+      "8.8.8.8"
     ]
   },
   "routing": {
@@ -21,42 +14,35 @@
     "rules": [
       {
         "type": "field",
-        "inboundTag": ["tun-in"],
-        "port": 53,
-        "outboundTag": "proxy"
-      },
-      {
-        "domain": ["geosite:category-ads-all"],
-        "outboundTag": "block"
-      },
-      {
-        "domain": ["geosite:cn"],
-        "outboundTag": "direct"
-      },
-      {
-        "ip": ["geoip:cn", "geoip:private"],
+        "ip": [
+          "geoip:private"
+        ],
         "outboundTag": "direct"
       },
       {
         "type": "field",
-        "outboundTag": "proxy",
-        "network": "tcp,udp"
+        "port": "1-65535",
+        "outboundTag": "proxy"
       }
     ]
   },
   "inbounds": [
     {
       "tag": "tun-in",
-      "port": 0,
       "protocol": "tun",
       "settings": {
         "name": "utun10",
         "mtu": 1492,
-        "address": "10.0.0.1",
-        "netmask": "255.255.255.0",
+        "address": [
+          "10.0.0.1/24"
+        ],
         "sniffing": {
           "enabled": true,
-          "destOverride": ["http", "tls", "quic"],
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ],
           "routeOnly": false
         }
       }
@@ -87,7 +73,6 @@
         "realitySettings": {
           "serverName": "icloud.com",
           "fingerprint": "firefox",
-          "show": false,
           "publicKey": "ArBDfXVcQqjhMCSJ1OoaQQNNIU_nMpFUoNnVHD--7xA",
           "shortId": "aa73",
           "spiderX": "/"
@@ -96,11 +81,13 @@
     },
     {
       "tag": "direct",
-      "protocol": "freedom"
+      "protocol": "freedom",
+      "settings": {}
     },
     {
       "tag": "block",
-      "protocol": "blackhole"
+      "protocol": "blackhole",
+      "settings": {}
     }
   ]
 }
