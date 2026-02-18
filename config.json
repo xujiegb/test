@@ -3,7 +3,6 @@
     "loglevel": "warning"
   },
   "dns": {
-    "tag": "dns-in",
     "servers": [
       "1.1.1.1",
       "8.8.8.8"
@@ -14,9 +13,7 @@
     "rules": [
       {
         "type": "field",
-        "ip": [
-          "geoip:private"
-        ],
+        "ip": ["geoip:private"],
         "outboundTag": "direct"
       },
       {
@@ -33,16 +30,10 @@
       "settings": {
         "name": "utun10",
         "mtu": 1492,
-        "address": [
-          "10.0.0.1/24"
-        ],
+        "address": ["10.0.0.1/24"],
         "sniffing": {
           "enabled": true,
-          "destOverride": [
-            "http",
-            "tls",
-            "quic"
-          ],
+          "destOverride": ["http", "tls", "quic"],
           "routeOnly": false
         }
       }
@@ -81,13 +72,7 @@
     },
     {
       "tag": "direct",
-      "protocol": "freedom",
-      "settings": {}
-    },
-    {
-      "tag": "block",
-      "protocol": "blackhole",
-      "settings": {}
+      "protocol": "freedom"
     }
   ]
 }
