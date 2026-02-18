@@ -1,12 +1,17 @@
 {
   "log": {
-    "loglevel": "warning",
-    "access": "none"
+    "access": "/Users/xujie/Downloads/xray_log/access.log",
+    "error": "/Users/xujie/Downloads/xray_log/error.log",
+    "loglevel": "warning"
   },
   "dns": {
+    "tag": "dns-in",
+    "hosts": {
+      "geosite:category-ads-all": "127.0.0.1"
+    },
     "servers": [
       {
-        "address": "1.1.1.1",
+        "address": "fakedns",
         "domains": ["geosite:geolocation-!cn"]
       },
       {
@@ -14,10 +19,7 @@
         "domains": ["geosite:cn"],
         "expectIPs": ["geoip:cn"]
       },
-      {
-        "address": "114.114.114.114",
-        "domains": ["geosite:cn"]
-      },
+      "1.1.1.1",
       "localhost"
     ]
   },
@@ -26,8 +28,19 @@
     "rules": [
       {
         "type": "field",
-        "domain": ["geosite:category-ads-all"],
-        "outboundTag": "block"
+        "ip": ["182.237.2.41"],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "port": 53,
+        "network": "udp",
+        "outboundTag": "proxy"
+      },
+      {
+        "type": "field",
+        "ip": ["198.18.0.0/15"],
+        "outboundTag": "proxy"
       },
       {
         "type": "field",
@@ -36,17 +49,12 @@
       },
       {
         "type": "field",
-        "domain": ["geosite:geolocation-!cn"],
-        "outboundTag": "proxy"
-      },
-      {
-        "type": "field",
-        "ip": ["223.5.5.5", "114.114.114.114", "geoip:cn", "geoip:private"],
+        "ip": ["geoip:cn", "geoip:private"],
         "outboundTag": "direct"
       },
       {
         "type": "field",
-        "port": "1-65535",
+        "network": "tcp,udp",
         "outboundTag": "proxy"
       }
     ]
@@ -54,16 +62,16 @@
   "inbounds": [
     {
       "tag": "tun-in",
+      "port": 0,
       "protocol": "tun",
       "settings": {
-        "name": "utun10",
-        "mtu": 1492,
-        "address": ["10.0.0.1/24"]
+        "name": "utun4",
+        "MTU": 1280
       },
       "sniffing": {
         "enabled": true,
-        "destOverride": ["http", "tls", "quic"],
-        "routeOnly": false
+        "destOverride": ["http", "tls", "quic", "fakedns"],
+        "metadataOnly": false
       }
     }
   ],
@@ -74,13 +82,13 @@
       "settings": {
         "vnext": [
           {
-            "address": "47.238.140.208",
-            "port": 65031,
+            "address": "182.237.2.41",
+            "port": 60841,
             "users": [
               {
-                "id": "d6061d17-0ff8-4a82-9665-2498a640da96",
-                "encryption": "none",
+                "id": "b1c1fe7c-ae3e-4bed-83ca-5745788d0bdb",
                 "flow": "xtls-rprx-vision",
+                "encryption": "none",
                 "level": 0
               }
             ]
@@ -91,21 +99,30 @@
         "network": "tcp",
         "security": "reality",
         "realitySettings": {
-          "serverName": "icloud.com",
+          "show": false,
           "fingerprint": "firefox",
-          "publicKey": "ArBDfXVcQqjhMCSJ1OoaQQNNIU_nMpFUoNnVHD--7xA",
-          "shortId": "aa73",
+          "serverName": "icloud.com",
+          "publicKey": "B-_jL4py0nenHatflbNcoAGNcwmlOfIJb-yxUSKEuwo",
+          "shortId": "d252",
           "spiderX": "/"
+        },
+        "sockopt": {
+          "mark": 255
         }
       }
     },
     {
       "tag": "direct",
-      "protocol": "freedom"
-    },
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIPv4"
+      }
+    }
+  ],
+  "fakedns": [
     {
-      "tag": "block",
-      "protocol": "blackhole"
+      "ipPool": "198.18.0.0/15",
+      "poolSize": 65535
     }
   ]
 }
