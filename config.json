@@ -1,0 +1,98 @@
+{
+  "log": {
+    "loglevel": "warning"
+  },
+  "dns": {
+    "servers": [
+      {
+        "address": "1.1.1.1",
+        "domains": ["geosite:geolocation-!cn"]
+      },
+      {
+        "address": "223.5.5.5",
+        "domains": ["geosite:cn"],
+        "expectIPs": ["geoip:cn"]
+      },
+      "localhost"
+    ]
+  },
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "type": "field",
+        "inboundTag": ["tun-in"],
+        "port": 53,
+        "outboundTag": "proxy"
+      },
+      {
+        "domain": ["geosite:category-ads-all"],
+        "outboundTag": "block"
+      },
+      {
+        "domain": ["geosite:cn"],
+        "outboundTag": "direct"
+      },
+      {
+        "ip": ["geoip:cn", "geoip:private"],
+        "outboundTag": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "tag": "tun-in",
+      "port": 0,
+      "protocol": "tun",
+      "settings": {
+        "name": "utun10",
+        "mtu": 1492,
+        "sniffing": {
+          "enabled": true,
+          "destOverride": ["http", "tls", "quic"]
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "47.238.140.208",
+            "port": 65031,
+            "users": [
+              {
+                "id": "d6061d17-0ff8-4a82-9665-2498a640da96",
+                "encryption": "none",
+                "flow": "xtls-rprx-vision"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "reality",
+        "realitySettings": {
+          "serverName": "icloud.com",
+          "fingerprint": "firefox",
+          "show": false,
+          "publicKey": "ArBDfXVcQqjhMCSJ1OoaQQNNIU_nMpFUoNnVHD--7xA",
+          "shortId": "aa73",
+          "spiderX": "/"
+        }
+      }
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom"
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole"
+    }
+  ]
+}
