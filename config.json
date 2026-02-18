@@ -33,9 +33,9 @@
       },
       {
         "type": "field",
+        "inboundTag": ["tun-in"],
         "port": 53,
-        "network": "udp",
-        "outboundTag": "proxy"
+        "outboundTag": "dns-in"
       },
       {
         "type": "field",
@@ -66,8 +66,8 @@
       "protocol": "tun",
       "settings": {
         "name": "utun4",
-        "address": ["172.16.0.1/30"],
-        "MTU": 1280
+        "address": ["192.168.47.1/30"],
+        "MTU": 1492
       },
       "sniffing": {
         "enabled": true,
