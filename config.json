@@ -1,6 +1,7 @@
 {
   "log": {
-    "loglevel": "warning"
+    "loglevel": "warning",
+    "access": "none"
   },
   "dns": {
     "servers": [
@@ -11,6 +12,11 @@
   "routing": {
     "domainStrategy": "IPIfNonMatch",
     "rules": [
+      {
+        "type": "field",
+        "ip": ["198.18.0.0/15"],
+        "outboundTag": "proxy"
+      },
       {
         "type": "field",
         "ip": ["geoip:private"],
@@ -30,12 +36,12 @@
       "settings": {
         "name": "utun10",
         "mtu": 1492,
-        "address": ["10.0.0.1/24"],
-        "sniffing": {
-          "enabled": true,
-          "destOverride": ["http", "tls", "quic"],
-          "routeOnly": false
-        }
+        "address": ["10.0.0.1/24"]
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls", "quic"],
+        "routeOnly": false
       }
     }
   ],
