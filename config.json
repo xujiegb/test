@@ -36,6 +36,11 @@
       {
         "ip": ["geoip:cn", "geoip:private"],
         "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "outboundTag": "proxy",
+        "network": "tcp,udp"
       }
     ]
   },
@@ -47,9 +52,12 @@
       "settings": {
         "name": "utun10",
         "mtu": 1492,
+        "address": "10.0.0.1",
+        "netmask": "255.255.255.0",
         "sniffing": {
           "enabled": true,
-          "destOverride": ["http", "tls", "quic"]
+          "destOverride": ["http", "tls", "quic"],
+          "routeOnly": false
         }
       }
     }
