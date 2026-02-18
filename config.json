@@ -66,11 +66,12 @@
       "protocol": "tun",
       "settings": {
         "name": "utun4",
+        "address": ["172.16.0.1/30"],
         "MTU": 1280
       },
       "sniffing": {
         "enabled": true,
-        "destOverride": ["http", "tls", "quic", "fakedns"],
+        "destOverride": ["http", "tls", "fakedns"],
         "metadataOnly": false
       }
     }
@@ -109,6 +110,12 @@
         "sockopt": {
           "mark": 255
         }
+      },
+      "mux": {
+        "enabled": true,
+        "concurrency": 8,
+        "xudpConcurrency": 16,
+        "xudpProxyUDP443": "allow"
       }
     },
     {
