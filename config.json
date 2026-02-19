@@ -5,21 +5,9 @@
     "loglevel": "warning"
   },
   "dns": {
-    "tag": "dns-in",
-    "hosts": {
-      "geosite:category-ads-all": "127.0.0.1"
-    },
     "servers": [
-      {
-        "address": "fakedns",
-        "domains": ["geosite:geolocation-!cn"]
-      },
-      {
-        "address": "223.5.5.5",
-        "domains": ["geosite:cn"],
-        "expectIPs": ["geoip:cn"]
-      },
       "1.1.1.1",
+      "8.8.8.8",
       "localhost"
     ]
   },
@@ -35,21 +23,11 @@
         "type": "field",
         "inboundTag": ["tun-in"],
         "port": 53,
-        "outboundTag": "dns-in"
+        "outboundTag": "dns-out"
       },
       {
         "type": "field",
-        "ip": ["198.18.0.0/15"],
-        "outboundTag": "proxy"
-      },
-      {
-        "type": "field",
-        "domain": ["geosite:cn"],
-        "outboundTag": "direct"
-      },
-      {
-        "type": "field",
-        "ip": ["geoip:cn", "geoip:private"],
+        "ip": ["geoip:private"],
         "outboundTag": "direct"
       },
       {
@@ -66,12 +44,15 @@
       "protocol": "tun",
       "settings": {
         "name": "utun4",
+        "mtu": 1492,
         "address": ["192.168.47.1/30"],
-        "MTU": 1492
+        "peer": "192.168.47.2",
+        "autoRoute": true,
+        "strictRoute": true
       },
       "sniffing": {
         "enabled": true,
-        "destOverride": ["http", "tls", "fakedns"],
+        "destOverride": ["http", "tls"],
         "metadataOnly": false
       }
     }
@@ -89,8 +70,7 @@
               {
                 "id": "b1c1fe7c-ae3e-4bed-83ca-5745788d0bdb",
                 "flow": "xtls-rprx-vision",
-                "encryption": "none",
-                "level": 0
+                "encryption": "none"
               }
             ]
           }
@@ -100,36 +80,21 @@
         "network": "tcp",
         "security": "reality",
         "realitySettings": {
-          "show": false,
           "fingerprint": "firefox",
           "serverName": "icloud.com",
           "publicKey": "B-_jL4py0nenHatflbNcoAGNcwmlOfIJb-yxUSKEuwo",
           "shortId": "d252",
           "spiderX": "/"
-        },
-        "sockopt": {
-          "mark": 255
         }
-      },
-      "mux": {
-        "enabled": true,
-        "concurrency": 8,
-        "xudpConcurrency": 16,
-        "xudpProxyUDP443": "allow"
       }
     },
     {
       "tag": "direct",
-      "protocol": "freedom",
-      "settings": {
-        "domainStrategy": "UseIPv4"
-      }
-    }
-  ],
-  "fakedns": [
+      "protocol": "freedom"
+    },
     {
-      "ipPool": "198.18.0.0/15",
-      "poolSize": 65535
+      "tag": "dns-out",
+      "protocol": "dns"
     }
   ]
 }
